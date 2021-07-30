@@ -2,6 +2,7 @@
 
 # Press Shift+F10 to execute it or replace it with your code.
 # Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+import csv
 
 import pandas as pd
 from numpy import mean, std
@@ -35,18 +36,25 @@ model.fit(x_train, y_train)
 # report the model performance
 #print('Mean Accuracy: %.3f (%.3f)' % (mean(n_scores), std(n_scores)))
 
-
 test_y_classes = model.predict_proba(x_test)
 
 print(test_y_classes[0])
 
-classes = []
+header = ["id"]
 for i in range(1, 10):
-    classes.append("Class_" + str(i))
+    header.append("Class_" + str(i))
+
+print(header)
 
 test_set = pd.read_csv('../tabular-playground-series-jun-2021/test.csv')
 
-output = pd.DataFrame({'id': test_set.id, classes : test_y_classes})
+with open('submission.csv', 'w', newline='') as csvfile:
+    wr = csv.writer(csvfile, delimiter=',')
+    wr.writerow(header)
+    for i in range(0, len(test_y_classes)):
+        rr = []
+        rr.append(test_set.id[i])
+        for j in range(0, 9):
+            rr.append(test_y_classes[i][j])
+        wr.writerow(rr)
 
-output.to_csv('submission.csv', index=False)
-print("Your submission was successfully saved!")
