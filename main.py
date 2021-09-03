@@ -56,10 +56,11 @@ for i in range(0, cv):
 
     error = 0
     for j in range(0, len(predicted_probs)):
+        norm = [float(pr) / sum(predicted_probs[j]) for pr in predicted_probs[j]]
         correct_class = int(y_train[b:e][j][6]) # Class_9
-        error += math.log(predicted_probs[j][correct_class - 1])
+        error += math.log(norm[correct_class - 1])
 
-    error /= (-1 * len(x_train))
+    error /= (-1 * len(predicted_probs))
 
     print(error)
 
