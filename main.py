@@ -15,13 +15,15 @@ def custom_cross_validation(cv, x_train_scaled, y_train, model):
     for i in range(0, cv):
         b = int(i * pie_len)
         e = int(b + pie_len)
-        model.fit(x_train_scaled[b:e], y_train[b:e])
-        predicted_probs = model.predict_proba(x_train_scaled[b:e])
+        train_range = np.r_[0:b, e:total_len]
+        test_range = np.r_[b:e]
+        model.fit(x_train_scaled[train_range], y_train[train_range])
+        predicted_probs = model.predict_proba(x_train_scaled[test_range])
 
         error = 0
         for j in range(0, len(predicted_probs)):
             norm = [float(pr) / sum(predicted_probs[j]) for pr in predicted_probs[j]]
-            correct_class = int(y_train[b:e][j][6])  # Class_9
+            correct_class = int(y_train[train_range][j][6])  # Class_9
             error += math.log(norm[correct_class - 1])
 
         error /= (-1 * len(predicted_probs))
